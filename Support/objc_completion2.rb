@@ -387,7 +387,7 @@ class ObjCFallbackCompletion
       elsif ENV['TM_SCOPE'].include? "meta.scope.implementation.objc"
         star = arg_name = true
         # find the path to the C bundle, if available
-        c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}
+        c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}.sub(/^"(.*)"\s*$/, '\1')
         clib_path = "#{c_bundle_path}/Support/CLib.txt.gz"
         cpplib_path = "#{c_bundle_path}/Support/C++Lib.txt.gz"
         files += [["#{e_sh clib_path}",false,false, :functions],
@@ -401,7 +401,7 @@ class ObjCFallbackCompletion
     else
       star = arg_name = true
       # find the path to the C bundle, if available
-      c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}
+      c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}.sub(/^"(.*)"\s*$/, '\1')
       clib_path = "#{c_bundle_path}/Support/CLib.txt.gz"
       cpplib_path = "#{c_bundle_path}/Support/C++Lib.txt.gz"
       files = [["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaClassesWithAncestry.txt.gz",false,false, :classes],
@@ -431,7 +431,7 @@ class ObjCFallbackCompletion
           res = pop_up(candidates, k[2],star,arg_name)
         else
           # find the path to the C bundle, if available
-          c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}
+          c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}.sub(/^"(.*)"\s*$/, '\1')
           clib_path = "#{c_bundle_path}/Support/CLib.txt.gz"
           cpplib_path = "#{c_bundle_path}/Support/C++Lib.txt.gz"
           files = [[ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaConstants.txt.gz",false,false, :constant],
