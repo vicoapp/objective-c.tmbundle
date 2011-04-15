@@ -386,22 +386,30 @@ class ObjCFallbackCompletion
         files += [[ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaTypes.txt.gz",true,false, :constant]]
       elsif ENV['TM_SCOPE'].include? "meta.scope.implementation.objc"
         star = arg_name = true
-        files += [["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CLib.txt.gz",false,false, :functions],
+        # find the path to the C bundle, if available
+        c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}
+        clib_path = "#{c_bundle_path}/Support/CLib.txt.gz"
+        cpplib_path = "#{c_bundle_path}/Support/C++Lib.txt.gz"
+        files += [["#{e_sh clib_path}",false,false, :functions],
         [ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaConstants.txt.gz",true,true, :constant],
         [ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaTypes.txt.gz",true,false, :constant],
         ["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaFunctions.txt.gz",false,false, :functions]]
-        files += [["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/C++Lib.txt.gz",false,false, :functions]] if ENV['TM_SCOPE'].include? "source.objc++"
+        files += [["#{e_sh cpplib_path}",false,false, :functions]] if ENV['TM_SCOPE'].include? "source.objc++"
       elsif ENV['TM_SCOPE'].include? "meta.scope.interface.objc"
         star = arg_name = true
       end
     else
       star = arg_name = true
+      # find the path to the C bundle, if available
+      c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}
+      clib_path = "#{c_bundle_path}/Support/CLib.txt.gz"
+      cpplib_path = "#{c_bundle_path}/Support/C++Lib.txt.gz"
       files = [["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaClassesWithAncestry.txt.gz",false,false, :classes],
       [ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaConstants.txt.gz",true,true, :constant],
       [ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaTypes.txt.gz",true,false, :constant],
-      [ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CLib.txt.gz",false,false, :functions],
+      [ "#{e_sh clib_path}",false,false, :functions],
       [ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaFunctions.txt.gz",false,false, :functions]]
-      files += [["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/C++Lib.txt.gz",false,false, :functions]] if ENV['TM_SCOPE'].include? "source.objc++"
+      files += [["#{e_sh cpplib_path}",false,false, :functions]] if ENV['TM_SCOPE'].include? "source.objc++"
     end
     dot_alpha_and_caret = /\.([a-zA-Z][a-zA-Z0-9]*)?$/
     if temp =line[0..caret_placement].match( dot_alpha_and_caret)
@@ -422,12 +430,16 @@ class ObjCFallbackCompletion
           candidates = candidates_or_exit(k[2], files)
           res = pop_up(candidates, k[2],star,arg_name)
         else
+          # find the path to the C bundle, if available
+          c_bundle_path = %x{#{VICO} -e '(((ViBundleStore defaultStore) bundleWithName:"C") path)'}
+          clib_path = "#{c_bundle_path}/Support/CLib.txt.gz"
+          cpplib_path = "#{c_bundle_path}/Support/C++Lib.txt.gz"
           files = [[ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaConstants.txt.gz",false,false, :constant],
           ["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaAnonymousEnums.txt.gz",false,false, :constant],
           ["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaAnnotatedStrings.txt.gz",false,false, :constant],
           ["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CocoaFunctions.txt.gz",false,false, :functions],
-          [ "#{e_sh ENV['TM_BUNDLE_SUPPORT']}/CLib.txt.gz",false,false, :functions]]
-          files += [["#{e_sh ENV['TM_BUNDLE_SUPPORT']}/C++Lib.txt.gz",false,false, :functions]] if ENV['TM_SCOPE'].include? "source.objc++"
+          [ "#{e_sh clib_path}",false,false, :functions]]
+          files += [["#{e_sh cpplib_path}",false,false, :functions]] if ENV['TM_SCOPE'].include? "source.objc++"
           candidates = candidates_or_exit(k[2], files)
           temp = []
           unless candidates.empty?
