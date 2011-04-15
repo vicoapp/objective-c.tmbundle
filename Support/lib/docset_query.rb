@@ -2,7 +2,6 @@ SUPPORT = ENV['TM_SUPPORT_PATH']
 
 require SUPPORT + '/lib/exit_codes'
 require SUPPORT + '/lib/escape'
-require SUPPORT + '/lib/osx/plist'
 require SUPPORT + '/lib/ui'
 
 DOCSET_CMD = "/Developer/usr/bin/docsetutil search -skip-text -query "
@@ -105,7 +104,7 @@ def show_document (results, query)
 	end
 	
 	if url
-		full = url =~ /^http:/ ? url : "tm-file://#{url}"
+		full = url =~ /^http:/ ? url : "file://#{url}"
 		TextMate.exit_show_html "<meta http-equiv='Refresh' content='0;URL=#{full}'>"
 	else
 		TextMate.exit_discard  
@@ -135,9 +134,8 @@ def cxx_lookup (query)
 end
 
 def get_user_selected_reference (class_names)
-	plist = {'menuItems' => class_names}.to_plist
-	res = OSX::PropertyList::load(%x{"$DIALOG" -up #{e_sh plist} })	
-	res['selectedMenuItem'] ? res['selectedMenuItem']['url'] : nil
+	res = TextMate::UI.menu(class_names)
+	res ? res['url'] : nil
 end
 
 def search_docs_all(query)
