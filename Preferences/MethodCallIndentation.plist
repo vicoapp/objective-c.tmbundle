@@ -18,7 +18,7 @@
 (set NSNotFound -1)
 (set string ((text textStorage) string))
 (set lineRange ((text textStorage) rangeOfLineAtLocation:(text caret)))
-(set range (text rangeOfScopeSelector:"meta.bracketed.objc" atLocation:(text caret)))
+(set range ((text document) rangeOfScopeSelector:"meta.bracketed.objc" atLocation:(text caret)))
 (if (&lt; (first lineRange) (first range))
 	-1
 (else
