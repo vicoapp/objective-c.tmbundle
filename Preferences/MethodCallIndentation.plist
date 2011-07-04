@@ -11,21 +11,20 @@
 		<key>indentExpression</key>
 		<string>
 ;
-; experimental testing of indent expressions
 ; the code should return the absolute amount of whitespace to use for the current line
 ; return a negative number to use default indentation rules
 ;
-(set NSNotFound -1)
+(set text (current-text))
 (set string ((text textStorage) string))
 (set lineRange ((text textStorage) rangeOfLineAtLocation:(text caret)))
 (set range ((text document) rangeOfScopeSelector:"meta.bracketed.objc" atLocation:(text caret)))
-(if (&lt; (first lineRange) (first range))
+(if (lt (first lineRange) (first range))
 	-1
 (else
 	; find first colon
 	(set colonRange (((text textStorage) string) rangeOfString:":" options:0 range:range))
 	(set location (first colonRange))
-	(if (and (not (eq location NSNotFound)) (&lt; location (first lineRange)))
+	(if (and (not (eq location NSNotFound)) (lt location (first lineRange)))
 		(set col ((text textStorage) columnAtLocation:location))
 		; now find the first colon on the current line
 		(set colon2 (((text textStorage) string) rangeOfString:":" options:0 range:lineRange))
@@ -35,7 +34,7 @@
 				(set col2 ((text textStorage) columnAtLocation:(first colon2)))
 				(set curIndent (text lengthOfIndentAtLocation:(text caret)))
 				(set indent (- col (- col2 curIndent)))
-				(if (&lt; indent 0) 0 (else indent))) )
+				(if (lt indent 0) 0 (else indent))) )
 		(else
 			-1))
 ))
