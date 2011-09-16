@@ -308,6 +308,8 @@ end
 	<string>selection</string>
 	<key>keyEquivalent</key>
 	<string>]</string>
+	<key>mode</key>
+	<string>insert</string>
 	<key>name</key>
 	<string>Insert Matching Start Bracket</string>
 	<key>output</key>
